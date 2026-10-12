@@ -29,7 +29,7 @@ body{
     align-items:center;
     gap:20px;
 
-    background:#0052cc;
+    background:#BB2C2D;
     color:white;
 
     padding:20px;
@@ -87,7 +87,7 @@ select,input{
 }
 
 button{
-    background:#0052cc;
+    background:#BB2C2D;
     color:white;
     border:none;
     padding:12px 18px;
@@ -158,16 +158,11 @@ button:hover{
 <div class="grid">
 
 <div>
-<label>Microscope</label>
+<label>Field Number FN</label>
 <select id="microscope">
-<option value="20">Leica DM500 (FN20)</option>
-<option value="20">Leica DM750 (FN20)</option>
-<option value="22" selected>Leica DM2000 (FN22)</option>
-<option value="22">Leica DMi8 (FN22)</option>
-<option value="22">Nikon Eclipse Si (FN22)</option>
-<option value="22">Nikon Ci-L (FN22)</option>
-<option value="22">Euromex Delphi-X (FN22)</option>
-<option value="26.5">Research Widefield (FN26.5)</option>
+<option value="20">FN20</option>
+<option value="22" selected>FN22</option>
+<option value="26.5">FN26.5</option>
 </select>
 </div>
 
@@ -191,6 +186,7 @@ button:hover{
 <option value="10" selected>10x</option>
 <option value="20">20x</option>
 <option value="40">40x</option>
+<option value="40">60x</option>
 <option value="100">100x</option>
 </select>
 </div>
@@ -381,7 +377,6 @@ function calculate(){
         status
     );
 }
-
 function drawOverlay(
     imageCircle,
     width,
@@ -390,66 +385,126 @@ function drawOverlay(
     status
 ){
 
-    const scale=
-    250/imageCircle;
+    const scale = 250 / imageCircle;
 
-    const radius=
-    (imageCircle/2)*scale;
+    const radius = (imageCircle / 2) * scale;
 
-    const sensorW=
-    width*scale;
+    const sensorW = width * scale;
 
-    const sensorH=
-    height*scale;
+    const sensorH = height * scale;
 
-    document.getElementById("overlay").innerHTML=
-    `
-    <svg width="350" height="350">
+    const coverage =
+        (
+            Math.sqrt(width * width + height * height)
+            / imageCircle
+        ) * 100;
+
+    document.getElementById("overlay").innerHTML = `
+
+    <svg width="420" height="420" viewBox="0 0 420 420">
+
+        <!-- Legend -->
+
+        <g transform="translate(25,20)">
+
+            <circle
+                cx="8"
+                cy="8"
+                r="7"
+                fill="#FFF5F5"
+                stroke="#BB2C2D"
+                stroke-width="2"/>
+
+            <text
+                x="25"
+                y="13"
+                font-size="14"
+                fill="#333">
+                Microscope Image Circle
+            </text>
+
+            <rect
+                x="0"
+                y="24"
+                width="14"
+                height="14"
+                fill="rgba(187,44,45,0.25)"
+                stroke="#BB2C2D"
+                stroke-width="2"/>
+
+            <text
+                x="25"
+                y="36"
+                font-size="14"
+                fill="#333">
+                Camera Sensor
+            </text>
+
+        </g>
+
+        <!-- Image Circle -->
 
         <circle
-            cx="175"
-            cy="160"
+            cx="210"
+            cy="190"
             r="${radius}"
-            fill="#dcebff"
-            stroke="#0052cc"
-            stroke-width="3"/>
+            fill="#FFF5F5"
+            stroke="#BB2C2D"
+            stroke-width="4"/>
+
+        <!-- Sensor -->
 
         <rect
-            x="${175-(sensorW/2)}"
-            y="${160-(sensorH/2)}"
+            x="${210-(sensorW/2)}"
+            y="${190-(sensorH/2)}"
             width="${sensorW}"
             height="${sensorH}"
-            fill="rgba(255,0,0,0.35)"
-            stroke="red"
-            stroke-width="2"/>
+            fill="rgba(187,44,45,0.25)"
+            stroke="#BB2C2D"
+            stroke-width="3"/>
 
-        <text x="10" y="20">
-        Blue = Microscope Image Circle
-        </text>
-
-        <text x="10" y="40">
-        Red = Camera Sensor
-        </text>
-
-        <rect
-            x="10"
-            y="285"
-            width="180"
-            height="30"
-            fill="${colour}"
-            rx="4"/>
+        <!-- Coverage -->
 
         <text
-            x="100"
+            x="210"
+            y="285"
+            font-size="16"
+            font-weight="bold"
+            text-anchor="middle"
+            fill="#444">
+
+            Coverage: ${coverage.toFixed(1)}%
+
+        </text>
+
+        <!-- Status Badge -->
+
+        <rect
+            x="130"
             y="305"
+            width="160"
+            height="42"
+            fill="${colour}"
+            rx="21"/>
+
+        <text
+            x="210"
+            y="332"
+            text-anchor="middle"
             fill="white"
-            text-anchor="middle">
+            font-size="18"
+            font-weight="bold">
+
             ${status}
+
         </text>
 
     </svg>
+
     `;
 }
+
+
 
 calculate();
 
