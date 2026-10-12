@@ -1,122 +1,412 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sensor Size Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>GT Vision Microscope Camera Calculator</title>
 
 <style>
+
 body{
     font-family:Arial,sans-serif;
-    max-width:700px;
-    margin:auto;
+    background:#f4f7fb;
+    margin:0;
     padding:20px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.header{
+    background:#0052cc;
+    color:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.header h1{
+    margin:0;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:15px;
 }
 
 label{
     display:block;
-    margin-top:15px;
+    margin-bottom:5px;
     font-weight:bold;
 }
 
 select,input{
     width:100%;
     padding:10px;
-}
-
-.result{
-    margin-top:20px;
-    padding:15px;
-    background:#f4f7ff;
+    border:1px solid #d9d9d9;
     border-radius:6px;
 }
+
+button{
+    background:#0052cc;
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+button:hover{
+    background:#003f9a;
+}
+
+#results{
+    margin-top:20px;
+    background:#f5f8ff;
+    padding:20px;
+    border-radius:8px;
+}
+
+#overlay{
+    margin-top:20px;
+    text-align:center;
+}
+
+.good{
+    color:green;
+    font-weight:bold;
+}
+
+.warning{
+    color:#ff9900;
+    font-weight:bold;
+}
+
+.bad{
+    color:red;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#666;
+}
+
 </style>
 </head>
+
 <body>
 
-<h1>Microscope Sensor Size Calculator</h1>
+<div class="container">
 
-<label>Microscope Field Number (FN)</label>
-<select id="fn">
-    <option value="20">FN20</option>
-    <option value="22" selected>FN22</option>
-    <option value="26.5">FN26.5</option>
+<div class="header">
+<h1>GT Vision</h1>
+<p>Microscope Camera & C‑Mount Optimisation Calculator</p>
+</div>
+
+<div class="grid">
+
+<div>
+<label>Microscope</label>
+<select id="microscope">
+<option value="20">Leica DM500 (FN20)</option>
+<option value="20">Leica DM750 (FN20)</option>
+<option value="22" selected>Leica DM2000 (FN22)</option>
+<option value="22">Leica DMi8 (FN22)</option>
+<option value="22">Nikon Eclipse Si (FN22)</option>
+<option value="22">Nikon Ci-L (FN22)</option>
+<option value="22">Euromex Delphi-X (FN22)</option>
+<option value="26.5">Research Widefield (FN26.5)</option>
 </select>
+</div>
 
-<label>Objective Magnification</label>
+<div>
+<label>Camera Sensor</label>
+<select id="sensorPreset">
+<option value="6.0,4.5">1/3"</option>
+<option value="6.4,4.8">1/2"</option>
+<option value="8.8,6.6" selected>2/3" (IMX264)</option>
+<option value="13.2,8.8">1" (IMX183)</option>
+<option value="17.3,13">Micro Four Thirds</option>
+<option value="23.5,15.6">APS-C</option>
+<option value="36,24">Full Frame</option>
+</select>
+</div>
+
+<div>
+<label>Objective</label>
 <select id="objective">
-    <option value="4">4x</option>
-    <option value="10" selected>10x</option>
-    <option value="20">20x</option>
-    <option value="40">40x</option>
-    <option value="100">100x</option>
+<option value="4">4x</option>
+<option value="10" selected>10x</option>
+<option value="20">20x</option>
+<option value="40">40x</option>
+<option value="100">100x</option>
 </select>
+</div>
 
+<div>
 <label>C-Mount Adapter</label>
 <select id="adapter">
-    <option value="0.35">0.35x</option>
-    <option value="0.5" selected>0.5x</option>
-    <option value="0.63">0.63x</option>
-    <option value="0.7">0.7x</option>
-    <option value="1">1.0x</option>
+<option value="0.35">0.35x</option>
+<option value="0.5" selected>0.5x</option>
+<option value="0.63">0.63x</option>
+<option value="0.7">0.7x</option>
+<option value="1">1.0x</option>
 </select>
+</div>
 
-<button onclick="calculate()">Calculate</button>
+<div>
+<label>Sensor Width (mm)</label>
+<input id="sensorWidth" value="8.8">
+</div>
 
-<div id="result" class="result"></div>
+<div>
+<label>Sensor Height (mm)</label>
+<input id="sensorHeight" value="6.6">
+</div>
+
+</div>
+
+<button id="calculateButton">
+Calculate
+</button>
+
+<div id="results"></div>
+
+<div id="overlay"></div>
+
+<div class="footer">
+GT Vision | Microscope Camera Selection Tool
+</div>
+
+</div>
 
 <script>
 
+document.getElementById("sensorPreset")
+.addEventListener("change",function(){
+
+    const values=this.value.split(",");
+
+    document.getElementById("sensorWidth").value=values[0];
+    document.getElementById("sensorHeight").value=values[1];
+
+    calculate();
+
+});
+
+document.getElementById("calculateButton")
+.addEventListener("click",calculate);
+
 function calculate(){
 
-    const fn =
-      parseFloat(document.getElementById('fn').value);
+    const fn=
+    parseFloat(
+        document.getElementById("microscope").value
+    );
 
-    const objective =
-      parseFloat(document.getElementById('objective').value);
+    const objective=
+    parseFloat(
+        document.getElementById("objective").value
+    );
 
-    const adapter =
-      parseFloat(document.getElementById('adapter').value);
+    const adapter=
+    parseFloat(
+        document.getElementById("adapter").value
+    );
 
-    const sensorDiagonal =
-      fn * adapter;
+    const width=
+    parseFloat(
+        document.getElementById("sensorWidth").value
+    );
 
-    const fieldOfView =
-      sensorDiagonal / objective;
+    const height=
+    parseFloat(
+        document.getElementById("sensorHeight").value
+    );
 
-    let recommended = "";
+    const diagonal=
+    Math.sqrt(
+        width*width+
+        height*height
+    );
 
-    if(sensorDiagonal <= 7)
-        recommended = "1/2 inch sensor";
+    const projectedCircle=
+    fn*adapter;
 
-    else if(sensorDiagonal <= 11)
-        recommended = "2/3 inch sensor";
+    const imageRadius=
+    projectedCircle/2;
 
-    else if(sensorDiagonal <= 16)
-        recommended = "1 inch sensor";
+    const sensorCorner=
+    Math.sqrt(
+        Math.pow(width/2,2)+
+        Math.pow(height/2,2)
+    );
 
-    else if(sensorDiagonal <= 22)
-        recommended = "Micro Four Thirds";
+    const coverage=
+    (diagonal/projectedCircle)*100;
 
-    else if(sensorDiagonal <= 30)
-        recommended = "APS-C";
+    const effectiveMagnification=
+    objective*adapter;
 
-    else
-        recommended = "Full Frame";
+    const fieldOfView=
+    projectedCircle/objective;
 
-    document.getElementById('result').innerHTML = `
-        <h2>Results</h2>
+    let status="Excellent";
+    let statusClass="good";
+    let colour="green";
 
-        <p><strong>Required Sensor Diagonal:</strong>
-        ${sensorDiagonal.toFixed(2)} mm</p>
+    if(sensorCorner>imageRadius){
 
-        <p><strong>Recommended Sensor:</strong>
-        ${recommended}</p>
+        status="Vignetting Risk";
+        statusClass="bad";
+        colour="red";
 
-        <p><strong>Effective Camera Magnification:</strong>
-        ${(objective * adapter).toFixed(1)}x</p>
+    }
+    else if(sensorCorner>imageRadius*0.9){
 
-        <p><strong>Approximate Field of View:</strong>
-        ${fieldOfView.toFixed(2)} mm</p>
+        status="Near Limit";
+        statusClass="warning";
+        colour="#ff9900";
+
+    }
+
+    const adapters=[0.35,0.5,0.63,0.7,1];
+
+    let best=0.35;
+    let smallestError=9999;
+
+    adapters.forEach(function(a){
+
+        const error=
+        Math.abs(
+            diagonal-(fn*a)
+        );
+
+        if(error<smallestError){
+
+            smallestError=error;
+            best=a;
+
+        }
+
+    });
+
+    document.getElementById("results").innerHTML=
+    `
+    <h2>Results</h2>
+
+    <p><strong>Recommended Adapter:</strong> ${best}x</p>
+
+    <p><strong>Selected Adapter:</strong> ${adapter}x</p>
+
+    <p><strong>Sensor Diagonal:</strong> ${diagonal.toFixed(2)} mm</p>
+
+    <p><strong>Projected Image Circle:</strong> ${projectedCircle.toFixed(2)} mm</p>
+
+    <p><strong>Coverage:</strong> ${coverage.toFixed(1)}%</p>
+
+    <p><strong>Status:</strong>
+    <span class="${statusClass}">
+    ${status}
+    </span>
+    </p>
+
+    <p><strong>Effective Magnification:</strong>
+    ${effectiveMagnification.toFixed(1)}x
+    </p>
+
+    <p><strong>Field Of View:</strong>
+    ${fieldOfView.toFixed(2)} mm
+    </p>
+
+    `;
+
+    drawOverlay(
+        projectedCircle,
+        width,
+        height,
+        colour,
+        status
+    );
+}
+
+function drawOverlay(
+    imageCircle,
+    width,
+    height,
+    colour,
+    status
+){
+
+    const scale=
+    250/imageCircle;
+
+    const radius=
+    (imageCircle/2)*scale;
+
+    const sensorW=
+    width*scale;
+
+    const sensorH=
+    height*scale;
+
+    document.getElementById("overlay").innerHTML=
+    `
+    <svg width="350" height="350">
+
+        <circle
+            cx="175"
+            cy="160"
+            r="${radius}"
+            fill="#dcebff"
+            stroke="#0052cc"
+            stroke-width="3"/>
+
+        <rect
+            x="${175-(sensorW/2)}"
+            y="${160-(sensorH/2)}"
+            width="${sensorW}"
+            height="${sensorH}"
+            fill="rgba(255,0,0,0.35)"
+            stroke="red"
+            stroke-width="2"/>
+
+        <text x="10" y="20">
+        Blue = Microscope Image Circle
+        </text>
+
+        <text x="10" y="40">
+        Red = Camera Sensor
+        </text>
+
+        <rect
+            x="10"
+            y="285"
+            width="180"
+            height="30"
+            fill="${colour}"
+            rx="4"/>
+
+        <text
+            x="100"
+            y="305"
+            fill="white"
+            text-anchor="middle">
+            ${status}
+        </text>
+
+    </svg>
     `;
 }
 
