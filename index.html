@@ -8,6 +8,14 @@
 
 <style>
 
+:root{
+    --gt-red:#BB2C2D;
+    --gt-red-dark:#992223;
+    --good:#2E8B57;
+    --warning:#F4A000;
+    --bad:#BB2C2D;
+}
+
 body{
     font-family:Arial,sans-serif;
     background:#f4f7fb;
@@ -28,43 +36,19 @@ body{
     display:flex;
     align-items:center;
     gap:20px;
-
-    background:#BB2C2D;
+    background:var(--gt-red);
     color:white;
-
     padding:20px;
-
     border-radius:12px;
-
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
 .logo{
     height:80px;
     width:auto;
-
     background:white;
-
     padding:8px;
-
     border-radius:8px;
-}
-
-.header-text{
-    flex:1;
-}
-
-.header-text h1{
-    margin:0;
-    color:white;
-}
-
-.header-text p{
-    margin-top:8px;
-}
-
-.header h1{
-    margin:0;
 }
 
 .grid{
@@ -75,91 +59,90 @@ body{
 
 label{
     display:block;
-    margin-bottom:5px;
     font-weight:bold;
+    margin-bottom:5px;
 }
 
 select,input{
     width:100%;
     padding:10px;
-    border:1px solid #d9d9d9;
+    border:1px solid #ddd;
     border-radius:6px;
 }
 
 button{
-    background:#BB2C2D;
+    background:var(--gt-red);
     color:white;
     border:none;
     padding:12px 18px;
     border-radius:6px;
-    cursor:pointer;
     margin-top:20px;
-}
-
-button:hover{
-    background:#003f9a;
+    cursor:pointer;
 }
 
 #results{
     margin-top:20px;
-    background:#f5f8ff;
+    background:#fff5f5;
     padding:20px;
+    border-left:5px solid var(--gt-red);
     border-radius:8px;
 }
 
 #overlay{
-    margin-top:20px;
     text-align:center;
+    margin-top:20px;
+}
+
+.status-box{
+    padding:12px;
+    border-radius:8px;
+    text-align:center;
+    font-weight:bold;
+    margin:15px 0;
 }
 
 .good{
-    color:green;
-    font-weight:bold;
+    background:#EAF7EF;
+    border:2px solid var(--good);
+    color:var(--good);
 }
 
 .warning{
-    color:#ff9900;
-    font-weight:bold;
+    background:#FFF7E6;
+    border:2px solid var(--warning);
+    color:var(--warning);
 }
 
 .bad{
-    color:red;
-    font-weight:bold;
-}
-
-.footer{
-    text-align:center;
-    margin-top:20px;
-    color:#666;
+    background:#FCEAEA;
+    border:2px solid var(--bad);
+    color:var(--bad);
 }
 
 </style>
 </head>
-
 <body>
+
+<div class="container">
 
 <div class="header">
 
-    <img
-        src="GT Vision Updated Logo 2026.png"
-        alt="GT Vision Logo"
-        class="logo">
+<img
+src="GT Vision Updated Logo 2026.png"
+alt="GT Vision Logo"
+class="logo">
 
-    <div class="header-text">
-
-        <h1>
-            Microscope Camera &amp; C‑Mount Optimisation • Camera &amp; Adapter Selection
-        </p>
-
-    </div>
+<div>
+<h1>Microscope Camera & C‑Mount Calculator</hpter Recommendation</p>
+</div>
 
 </div>
-`
+
 <div class="grid">
 
 <div>
-<label>Field Number FN</label>
-<select id="microscope">
+<label>Field Number (FN)</label>
+<select id="fn">
 <option value="20">FN20</option>
 <option value="22" selected>FN22</option>
 <option value="26.5">FN26.5</option>
@@ -184,458 +167,4 @@ button:hover{
 <select id="objective">
 <option value="4">4x</option>
 <option value="10" selected>10x</option>
-<option value="20">20x</option>
-<option value="40">40x</option>
-<option value="40">60x</option>
-<option value="100">100x</option>
-</select>
-</div>
-
-<div>
-<label>C-Mount Adapter</label>
-<select id="adapter">
-<option value="0.35">0.35x</option>
-<option value="0.5" selected>0.5x</option>
-<option value="0.63">0.63x</option>
-<option value="0.7">0.7x</option>
-<option value="1">1.0x</option>
-</select>
-</div>
-
-<div>
-<label>Sensor Width (mm)</label>
-<input id="sensorWidth" value="8.8">
-</div>
-
-<div>
-<label>Sensor Height (mm)</label>
-<input id="sensorHeight" value="6.6">
-</div>
-
-</div>
-
-<button id="calculateButton">
-Calculate
-</button>
-
-<div id="results"></div>
-
-<div id="overlay"></div>
-
-<div class="footer">
-GT Vision | Microscope Camera Selection Tool
-</div>
-
-</div>
-
-<script>
-
-document.getElementById("sensorPreset")
-.addEventListener("change",function(){
-
-    const values=this.value.split(",");
-
-    document.getElementById("sensorWidth").value=values[0];
-    document.getElementById("sensorHeight").value=values[1];
-
-    calculate();
-
-});
-
-document.getElementById("calculateButton")
-.addEventListener("click",calculate);
-
-function calculate(){
-
-    const fn=
-    parseFloat(
-        document.getElementById("microscope").value
-    );
-
-    const objective=
-    parseFloat(
-        document.getElementById("objective").value
-    );
-
-    const adapter=
-    parseFloat(
-        document.getElementById("adapter").value
-    );
-
-    const width=
-    parseFloat(
-        document.getElementById("sensorWidth").value
-    );
-
-    const height=
-    parseFloat(
-        document.getElementById("sensorHeight").value
-    );
-
-    const diagonal=
-    Math.sqrt(
-        width*width+
-        height*height
-    );
-
-    const projectedCircle=
-    fn*adapter;
-
-    const imageRadius=
-    projectedCircle/2;
-
-    const sensorCorner=
-    Math.sqrt(
-        Math.pow(width/2,2)+
-        Math.pow(height/2,2)
-    );
-
-    const coverage=
-    (diagonal/projectedCircle)*100;
-
-    const effectiveMagnification=
-    objective*adapter;
-
-    const fieldOfView=
-    projectedCircle/objective;
-
-let status = "";
-let className = "";
-let colour = "";
-
-/* Coverage-based traffic light system */
-
-if (coverage >= 95 && coverage <= 105) {
-
-    status = "Recommended";
-    className = "good";
-    colour = "#2E8B57";
-
-}
-else if (
-    (coverage >= 85 && coverage < 95) ||
-    (coverage > 105 && coverage <= 115)
-) {
-
-    status = "Borderline";
-    className = "warning";
-    colour = "#F4A000";
-
-}
-else {
-
-    status = "Not Recommended";
-    className = "bad";
-    colour = "#BB2C2D";
-
-}
-    if(sensorCorner>imageRadius){
-
-        status="Vignetting Risk";
-        statusClass="bad";
-        colour="red";
-
-    }
-    else if(sensorCorner>imageRadius*0.9){
-
-        status="Near Limit";
-        statusClass="warning";
-        colour="#ff9900";
-
-    }
-
-    const adapters=[0.35,0.5,0.63,0.7,1];
-
-    let best=0.35;
-    let smallestError=9999;
-
-    adapters.forEach(function(a){
-
-        const error=
-        Math.abs(
-            diagonal-(fn*a)
-        );
-
-        if(error<smallestError){
-
-            smallestError=error;
-            best=a;
-
-        }
-
-    });
-
-    document.getElementById("results").innerHTML=
-    `
-    <h2>Results</h2>
-
-    <p><strong>Recommended Adapter:</strong> ${best}x</p>
-
-    <p><strong>Selected Adapter:</strong> ${adapter}x</p>
-
-    <p><strong>Sensor Diagonal:</strong> ${diagonal.toFixed(2)} mm</p>
-
-    <p><strong>Projected Image Circle:</strong> ${projectedCircle.toFixed(2)} mm</p>
-
-    <p><strong>Coverage:</strong> ${coverage.toFixed(1)}%</p>
-
- let status = "";
-let className = "";
-let colour = "";
-
-/* Coverage-based traffic light system */
-
-if (coverage >= 95 && coverage <= 105) {
-
-    status = "Recommended";
-    className = "good";
-    colour = "#2E8B57";
-
-}
-else if (
-    (coverage >= 85 && coverage < 95) ||
-    (coverage > 105 && coverage <= 115)
-) {
-
-    status = "Borderline";
-    className = "warning";
-    colour = "#F4A000";
-
-}
-else {
-
-    status = "Not Recommended";
-    className = "bad";
-    colour = "#BB2C2D";
-
-}
-
-    <p><strong>Effective Magnification:</strong>
-    ${effectiveMagnification.toFixed(1)}x
-    </p>
-
-    <p><strong>Field Of View:</strong>
-    ${fieldOfView.toFixed(2)} mm
-    </p>
-
-    `;
-
-    drawOverlay(
-        projectedCircle,
-        width,
-        height,
-        colour,
-        status
-    );
-}
-function drawOverlay(
-    imageCircle,
-    width,
-    height,
-    colour,
-    status
-){
-
-    const scale = 250 / imageCircle;
-
-    const radius = (imageCircle / 2) * scale;
-
-    const sensorW = width * scale;
-
-    const sensorH = height * scale;
-
-    const coverage =
-        (
-            Math.sqrt(width * width + height * height)
-            / imageCircle
-        ) * 100;
-
-    document.getElementById("overlay").innerHTML = `
-
-    <svg width="420" height="420" viewBox="0 0 420 420">
-
-        <!-- Legend -->
-
-        <g transform="translate(25,20)">
-
-            <circle
-                cx="8"
-                cy="8"
-                r="7"
-                fill="#FFF5F5"
-                stroke="#BB2C2D"
-                stroke-width="2"/>
-
-            <text
-                x="25"
-                y="13"
-                font-size="14"
-                fill="#333">
-                Microscope Image Circle
-            </text>
-
-            <rect
-                x="0"
-                y="24"
-                width="14"
-                height="14"
-                fill="rgba(187,44,45,0.25)"
-                stroke="#BB2C2D"
-                stroke-width="2"/>
-
-            <text
-                x="25"
-                y="36"
-                font-size="14"
-                fill="#333">
-                Camera Sensor
-            </text>
-
-        </g>
-
-        <!-- Image Circle -->
-
-        <circle
-            cx="210"
-            cy="190"
-            r="${radius}"
-            fill="#FFF5F5"
-            stroke="#BB2C2D"
-            stroke-width="4"/>
-
-        <!-- Sensor -->
-
-        <rect
-            x="${210-(sensorW/2)}"
-            y="${190-(sensorH/2)}"
-            width="${sensorW}"
-            height="${sensorH}"
-            fill="rgba(187,44,45,0.25)"
-            stroke="#BB2C2D"
-            stroke-width="3"/>
-
-        <!-- Coverage -->
-
-        <text
-            x="210"
-            y="285"
-            font-size="16"
-            font-weight="bold"
-            text-anchor="middle"
-            fill="#444">
-
-            Coverage: ${coverage.toFixed(1)}%
-
-        </text>
-
-        <!-- Status Badge -->
-
-        <rect
-            x="130"
-            y="305"
-            width="160"
-            height="42"
-            fill="${colour}"
-            rx="21"/>
-
-        <text
-            x="210"
-            y="332"
-            text-anchor="middle"
-            fill="white"
-            font-size="18"
-            font-weight="bold">
-
-            ${status}
-
-        </text>
-
-    </svg>
-
-    `;
-}
-<div class="coverage-bar">
-
-    <div
-       class="coverage-fill"
-       style="
-       width:${Math.min(100,coverage)}%;
-       background:${colour};
-       ">
-    </div>
-
-</div>
-.coverage-bar{
-
-    width:100%;
-
-    height:24px;
-
-    background:#E7E7E7;
-
-    border-radius:12px;
-
-    overflow:hidden;
-
-    margin:15px 0;
-
-}
-
-.coverage-fill{
-
-    height:24px;
-
-    border-radius:12px;
-
-}
-.status-box{
-
-    padding:14px;
-
-    border-radius:8px;
-
-    text-align:center;
-
-    margin:15px 0;
-
-    font-size:18px;
-
-    font-weight:700;
-
-}
-
-.status-box.good{
-
-    background:#EAF7EF;
-
-    border:2px solid #2E8B57;
-
-    color:#2E8B57;
-
-}
-
-.status-box.warning{
-
-    background:#FFF7E6;
-
-    border:2px solid #F4A000;
-
-    color:#F4A000;
-
-}
-
-.status-box.bad{
-
-    background:#FCEAEA;
-
-    border:2px solid #BB2C2D;
-
-    color:#BB2C2D;
-
-}
-calculate();
-
-</script>
-
-</body>
-</html>
+<option value="20">20x
