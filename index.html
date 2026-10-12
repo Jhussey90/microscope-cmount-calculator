@@ -170,7 +170,7 @@ class="logo">
 <option value="20">20x
 
 <div id="overlay"></div>
-``
+
 function drawOverlay(
     imageCircle,
     width,
@@ -201,7 +201,7 @@ function drawOverlay(
                 r="7"
                 fill="#FFF5F5"
                 stroke="#BB2C2D"
-                stroke-width="2" />
+                stroke-width="2"/>
 
             <text
                 x="24"
@@ -218,7 +218,7 @@ function drawOverlay(
                 height="14"
                 fill="rgba(187,44,45,0.25)"
                 stroke="#BB2C2D"
-                stroke-width="2" />
+                stroke-width="2"/>
 
             <text
                 x="24"
@@ -230,7 +230,7 @@ function drawOverlay(
 
         </g>
 
-        <!-- Image Circle -->
+        <!-- Optical Circle -->
 
         <circle
             cx="250"
@@ -240,11 +240,11 @@ function drawOverlay(
             stroke="#BB2C2D"
             stroke-width="4"/>
 
-        <!-- Sensor Rectangle -->
+        <!-- Sensor -->
 
         <rect
-            x="${250 - sensorW/2}"
-            y="${180 - sensorH/2}"
+            x="${250 - sensorW / 2}"
+            y="${180 - sensorH / 2}"
             width="${sensorW}"
             height="${sensorH}"
             fill="rgba(187,44,45,0.30)"
@@ -286,31 +286,4 @@ function drawOverlay(
     </svg>
 
     `;
-if (coverage >= 95 && coverage <= 105) {
-
-    status = "Recommended";
-    className = "good";
-    colour = "#2E8B57";
-
 }
-else if (
-    (coverage >= 85 && coverage < 95) ||
-    (coverage > 105 && coverage <= 115)
-) {
-
-    status = "Borderline";
-    className = "warning";
-    colour = "#F4A000";
-
-}
-else {
-
-    status = "Not Recommended";
-    className = "bad";
-    colour = "#BB2C2D";
-
-}
-    }
-    
-}
-    
