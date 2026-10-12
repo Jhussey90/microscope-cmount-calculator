@@ -25,11 +25,42 @@ body{
 }
 
 .header{
+    display:flex;
+    align-items:center;
+    gap:20px;
+
     background:#0052cc;
     color:white;
+
     padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
+
+    border-radius:12px;
+
+    margin-bottom:25px;
+}
+
+.logo{
+    height:80px;
+    width:auto;
+
+    background:white;
+
+    padding:8px;
+
+    border-radius:8px;
+}
+
+.header-text{
+    flex:1;
+}
+
+.header-text h1{
+    margin:0;
+    color:white;
+}
+
+.header-text p{
+    margin-top:8px;
 }
 
 .header h1{
@@ -107,13 +138,23 @@ button:hover{
 
 <body>
 
-<div class="container">
-
 <div class="header">
-<h1>GT Vision</h1>
-<p>Microscope Camera & C‑Mount Optimisation Calculator</p>
-</div>
 
+    <img
+        src="GT Vision updated logo 2026.png"
+        alt="GT Vision Logo"
+        class="logo">
+
+    <div class="header-text">
+
+        <h1>
+            Microscope Camera &amp; C‑Mount Optimisationomex • Camera &amp; Adapter Selection
+        </p>
+
+    </div>
+
+</div>
+`
 <div class="grid">
 
 <div>
